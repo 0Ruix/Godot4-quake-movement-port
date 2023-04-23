@@ -1,0 +1,66 @@
+[gd_scene load_steps=5 format=3 uid="uid://b3q5vakhrwj42"]
+
+[ext_resource type="Script" path="res://player.gd" id="1_fiby8"]
+
+[sub_resource type="CapsuleShape3D" id="CapsuleShape3D_6omnk"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_gc4vm"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_otnkf"]
+
+[node name="player" type="CharacterBody3D"]
+script = ExtResource("1_fiby8")
+groundDeAccel = 15.0
+airAccel = 5.0
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("CapsuleShape3D_6omnk")
+
+[node name="Head" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.492617, 0)
+
+[node name="Camera" type="Camera3D" parent="Head"]
+fov = 90.0
+
+[node name="Control" type="Control" parent="."]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="speed" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = -121.0
+offset_right = 121.0
+offset_bottom = 52.0
+grow_horizontal = 2
+text = "SPEED
+123"
+label_settings = SubResource("LabelSettings_gc4vm")
+horizontal_alignment = 1
+
+[node name="speedPer" type="Label" parent="Control"]
+layout_mode = 1
+anchors_preset = 5
+anchor_left = 0.5
+anchor_right = 0.5
+offset_left = 110.0
+offset_right = 352.0
+offset_bottom = 52.0
+grow_horizontal = 2
+text = "%"
+label_settings = SubResource("LabelSettings_otnkf")
+
+[node name="stuff" type="Label" parent="Control"]
+layout_mode = 1
+offset_right = 242.0
+offset_bottom = 96.0
+text = "
+"
+label_settings = SubResource("LabelSettings_gc4vm")
+horizontal_alignment = 1

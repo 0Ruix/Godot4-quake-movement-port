@@ -1,0 +1,20 @@
+[gd_scene load_steps=2 format=3 uid="uid://0jshrtb33glb"]
+
+[ext_resource type="PackedScene" uid="uid://b3q5vakhrwj42" path="res://player.tscn" id="1_4i12h"]
+
+[node name="Node3D" type="Node3D"]
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+use_collision = true
+size = Vector3(500, 0.1, 500)
+
+[node name="CSGBox3D" type="CSGPolygon3D" parent="CSGBox3D"]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6, 0.05, -2)
+polygon = PackedVector2Array(0, 0, 0.9, 2, 1, 2, 1, 1, 1, 0)
+depth = 12.0
+
+[node name="player" parent="." instance=ExtResource("1_4i12h")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07536, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7, 0)
