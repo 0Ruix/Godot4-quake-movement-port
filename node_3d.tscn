@@ -1,20 +1,47 @@
-[gd_scene load_steps=2 format=3 uid="uid://0jshrtb33glb"]
+[gd_scene load_steps=7 format=3 uid="uid://0jshrtb33glb"]
 
 [ext_resource type="PackedScene" uid="uid://b3q5vakhrwj42" path="res://player.tscn" id="1_4i12h"]
+[ext_resource type="Material" uid="uid://caqovhf0hxel" path="res://obs.tres" id="1_xke7e"]
+[ext_resource type="Material" uid="uid://dy7i6uvd5quoi" path="res://surface.tres" id="2_7qxvq"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_mpyx7"]
+
+[sub_resource type="Sky" id="Sky_vh3b5"]
+sky_material = SubResource("ProceduralSkyMaterial_mpyx7")
+
+[sub_resource type="Environment" id="Environment_1jkwk"]
+background_mode = 2
+sky = SubResource("Sky_vh3b5")
 
 [node name="Node3D" type="Node3D"]
 
-[node name="CSGBox3D" type="CSGBox3D" parent="."]
-use_collision = true
-size = Vector3(500, 0.1, 500)
-
-[node name="CSGBox3D" type="CSGPolygon3D" parent="CSGBox3D"]
+[node name="CSGBox3D2" type="CSGPolygon3D" parent="."]
 transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6, 0.05, -2)
-polygon = PackedVector2Array(0, 0, 0.9, 2, 1, 2, 1, 1, 1, 0)
+material_override = ExtResource("1_xke7e")
+use_collision = true
+polygon = PackedVector2Array(0, 0, 2, 2, 2, 2, 2, 2, 2, 0)
 depth = 12.0
+
+[node name="CSGBox3D3" type="CSGBox3D" parent="."]
+transform = Transform3D(-4.37114e-08, 0, 1, 0, 1, 0, -1, 0, -4.37114e-08, 6, 1, -26)
+material_override = ExtResource("1_xke7e")
+use_collision = true
+size = Vector3(32, 2, 36)
+
+[node name="CSGBox3D" type="CSGBox3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 3)
+material_override = ExtResource("2_7qxvq")
+use_collision = true
+size = Vector3(100, 0.1, 100)
 
 [node name="player" parent="." instance=ExtResource("1_4i12h")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.07536, 0)
+friction = 3.0
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.866025, 0.5, 0, -0.5, 0.866025, 0, 7, 0)
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1jkwk")
+
+[node name="CSGCombiner3D" type="CSGCombiner3D" parent="."]

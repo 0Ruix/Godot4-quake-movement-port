@@ -14,8 +14,6 @@
 
 [node name="player" type="CharacterBody3D"]
 script = ExtResource("1_fiby8")
-groundDeAccel = 15.0
-airAccel = 5.0
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_6omnk")
@@ -43,8 +41,6 @@ offset_left = -121.0
 offset_right = 121.0
 offset_bottom = 52.0
 grow_horizontal = 2
-text = "SPEED
-123"
 label_settings = SubResource("LabelSettings_gc4vm")
 horizontal_alignment = 1
 
@@ -57,7 +53,6 @@ offset_left = 110.0
 offset_right = 352.0
 offset_bottom = 52.0
 grow_horizontal = 2
-text = "%"
 label_settings = SubResource("LabelSettings_otnkf")
 
 [node name="wJump" type="Label" parent="Control"]
@@ -74,6 +69,26 @@ layout_mode = 1
 offset_top = 52.0
 offset_right = 242.0
 offset_bottom = 96.0
+text = "
+"
+label_settings = SubResource("LabelSettings_gc4vm")
+horizontal_alignment = 1
+
+[node name="dirs" type="Label" parent="Control"]
+layout_mode = 1
+offset_top = 96.0
+offset_right = 242.0
+offset_bottom = 140.0
+text = "
+"
+label_settings = SubResource("LabelSettings_gc4vm")
+horizontal_alignment = 1
+
+[node name="grounded" type="Label" parent="Control"]
+layout_mode = 1
+offset_top = 140.0
+offset_right = 242.0
+offset_bottom = 184.0
 text = "
 "
 label_settings = SubResource("LabelSettings_gc4vm")

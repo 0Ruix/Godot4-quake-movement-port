@@ -18,15 +18,19 @@ var _rot:Vector2
 @export var friction = 6.0
 @export var moveSpeed = 7.0
 @export var groundAccel = 14.0
-@export var groundDeAccel = 50.0
+@export var groundDeAccel = 10.0
 @export var airAccel = 2.0
 @export var jumpSpeed = 4.0
+@export var debug = true
+
 
 var wishDir = Vector3.ZERO
 var playerVelocity = Vector3.ZERO
 
 var wishJump = false
-var autoJump = false
+var autoJump = true
+
+#maybe add a way to remove wish jump?
 
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
@@ -72,28 +76,31 @@ func _physics_process(delta):
 		air_move()
 	
 	velocity = playerVelocity #Override the internal velocity
-	
 	move_and_slide()
 	#DEBUG
-	get_node("Control/speed").text = "SPEED\n" + str(velocity.length())
-	
-	var per = velocity.length() / moveSpeed*100 #Percentage of the speed against the "limit"
-	if per > velocity.length():
-		get_node("Control/speedPer").label_settings.set_font_color(Color(0,1,0,1))
-	else:
-		get_node("Control/speedPer").label_settings.set_font_color(Color(1,1,1,1))
+	if debug:
+		get_node("Control/speed").text = "SPEED\n" + str(velocity.length())
 		
-	get_node("Control/speedPer").text = "%" + str(snapped(velocity.length() / moveSpeed*100,0.01))
-	get_node("Control/wJump").text = "wish jump : " + str(wishJump)
-	get_node("Control/fps").text = "FPS: " + str(Engine.get_frames_per_second())
-	
-	#Blue is wishdir and green is velocity
-	DebugDraw.draw_line(position, position + wishDir,Color.BLUE)
-	DebugDraw.draw_line(position, position + velocity,Color.GREEN)
+		var per = velocity.length() / moveSpeed*100 #Percentage of the speed against the "limit"
+		if per > velocity.length():
+			get_node("Control/speedPer").label_settings.set_font_color(Color(0,1,0,1))
+		else:
+			get_node("Control/speedPer").label_settings.set_font_color(Color(1,1,1,1))
+			
+		get_node("Control/speedPer").text = "%" + str(snapped(velocity.length() / moveSpeed*100,0.01))
+		get_node("Control/wJump").text = "wish jump : " + str(wishJump)
+		get_node("Control/fps").text = "FPS: " + str(Engine.get_frames_per_second())
+		get_node("Control/dirs").text = "Wish: " + str(wishDir) + "\nVelocity: " + str(velocity)
+		get_node("Control/grounded").text = "Grounded: " + str(is_on_floor())
+		
+		#Blue is wishdir and green is velocity
+		DebugDraw.draw_line(position, position + wishDir,Color.BLUE)
+		DebugDraw.draw_line(position, position + velocity,Color.GREEN)
 
 func apply_friction(enabled:bool):
 	if !enabled:
 		return
+	
 	var pVecCopy = playerVelocity
 	var drop = 0 
 	pVecCopy.y = 0
@@ -102,10 +109,10 @@ func apply_friction(enabled:bool):
 	var newSpeed:float
 	
 	if (is_on_floor()):
-		if lastSpeed < groundAccel:
+		if lastSpeed < groundDeAccel:
 			control = groundAccel
 		else:
-			lastSpeed
+			control = lastSpeed
 		
 		drop = control * friction * get_physics_process_delta_time()
 	
@@ -145,7 +152,7 @@ func wishSpeed():
 	return wishDir.length_squared() * moveSpeed
 
 func accelerate(wd,wishSpeed,accel):
-	var current_speed = wd.dot(playerVelocity)
+	var current_speed = playerVelocity.dot(wd)
 	var add_speed = wishSpeed - current_speed
 	var accelSpeed:float = 0.0
 	
@@ -154,7 +161,7 @@ func accelerate(wd,wishSpeed,accel):
 	
 	accelSpeed = accel * get_physics_process_delta_time() * wishSpeed()
 	
-	if accelSpeed > add_speed:
+	if accelSpeed > accel:
 		accelSpeed = add_speed
 	
 	playerVelocity.x += accelSpeed * wishDir.x
