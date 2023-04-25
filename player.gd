@@ -5,6 +5,7 @@ extends CharacterBody3D
 #Ported to GDscript 2.0 by 0Ruix --> github.com/0Ruix
 #Also thanks to www.youtube.com/@MattsRamblings and to other that i've forgotten about sorry.
 #There are still problems. If you have a  solution please let me know...
+#I'll clean this code when i finally get it working normally
 
 @onready var body = self
 @onready var head = $Head
@@ -17,7 +18,7 @@ var _rot:Vector2
 @export var friction = 6.0
 @export var moveSpeed = 7.0
 @export var groundAccel = 14.0
-@export var groundDeAccel = 10.0
+@export var groundDeAccel = 50.0
 @export var airAccel = 2.0
 @export var jumpSpeed = 4.0
 
@@ -30,11 +31,10 @@ var autoJump = false
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_FULLSCREEN)
-	
-
 
 func _unhandled_input(event):
 	wish_jump_logic(event)
+	setDir()
 
 func _input(event):
 	if event is InputEventMouseMotion:
@@ -49,42 +49,47 @@ var gravity = ProjectSettings.get_setting("physics/3d/default_gravity")
 var cam_accel:float = 40
 
 func _process(delta):
-	if Engine.get_frames_per_second() > Engine.physics_ticks_per_second:
-		head.position = lerpf(head.position,0,cam_accel * delta)
-	else:
-		head.position = Vector3.ZERO
+#	Breaks occasionaly
+#	if Engine.get_frames_per_second() > Engine.physics_ticks_per_second:
+#		head.position = lerpf(head.position,0,cam_accel * delta)
+#	else:
+#		head.position = Vector3.ZERO
+	pass
 
-func _physics_process(delta):
-	#Get Input Vec
+func setDir():
+	#Probably need to find a better way of calculating wishDir
 	var moveKeyInput = Vector2.ZERO
 	moveKeyInput = Input.get_vector("moveleft","moveright","back","forward")
 	wishDir = Vector3(moveKeyInput.x,0,-moveKeyInput.y).rotated(Vector3.UP,body.rotation.y).normalized()
-	#Probably need to find a better way of calculating wishDir
-	
+
+func _physics_process(delta):
+	#Get Input Vec
 	queue_jump()
 	
-	if !is_on_floor():
-		air_move()
-	else:
+	if is_on_floor():
 		ground_move()
+	else:
+		air_move()
 	
 	velocity = playerVelocity #Override the internal velocity
-#	print(velocity," | ",playerVelocity)
+	
 	move_and_slide()
 	#DEBUG
-	print("WISH DIR: ", wishDir,"\nVelocity: ",velocity,"\n ===============")
 	get_node("Control/speed").text = "SPEED\n" + str(velocity.length())
-	var per = velocity.length() / moveSpeed*100
+	
+	var per = velocity.length() / moveSpeed*100 #Percentage of the speed against the "limit"
 	if per > velocity.length():
 		get_node("Control/speedPer").label_settings.set_font_color(Color(0,1,0,1))
 	else:
 		get_node("Control/speedPer").label_settings.set_font_color(Color(1,1,1,1))
 		
 	get_node("Control/speedPer").text = "%" + str(snapped(velocity.length() / moveSpeed*100,0.01))
-	get_node("Control/stuff").text = "wish jump : " + str(wishJump)
+	get_node("Control/wJump").text = "wish jump : " + str(wishJump)
+	get_node("Control/fps").text = "FPS: " + str(Engine.get_frames_per_second())
 	
-	DebugDraw.draw_line(Vector3(position.x,position.y,position.z),Vector3(position.x + wishDir.x ,body.position.y, position.z + wishDir.z),Color.BLUE)
-	DebugDraw.draw_line(Vector3(position.x,position.y,position.z),Vector3(position.x + velocity.x, position.y,position.z + velocity.z),Color.GREEN)
+	#Blue is wishdir and green is velocity
+	DebugDraw.draw_line(position, position + wishDir,Color.BLUE)
+	DebugDraw.draw_line(position, position + velocity,Color.GREEN)
 
 func apply_friction(enabled:bool):
 	if !enabled:
@@ -95,11 +100,13 @@ func apply_friction(enabled:bool):
 	var lastSpeed = pVecCopy.length()
 	var control:float
 	var newSpeed:float
+	
 	if (is_on_floor()):
 		if lastSpeed < groundAccel:
 			control = groundAccel
 		else:
 			lastSpeed
+		
 		drop = control * friction * get_physics_process_delta_time()
 	
 	newSpeed = lastSpeed - drop
@@ -125,7 +132,7 @@ func queue_jump():
 func ground_move():
 	apply_friction(!wishJump) #change to !wishjump
 	accelerate(wishDir,wishSpeed(),groundAccel)
-	#wishjump
+	
 	if wishJump:
 		wishJump = false
 		playerVelocity.y = jumpSpeed #states might be usefull

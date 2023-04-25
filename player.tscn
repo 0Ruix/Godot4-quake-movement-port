@@ -1,4 +1,4 @@
-[gd_scene load_steps=5 format=3 uid="uid://b3q5vakhrwj42"]
+[gd_scene load_steps=7 format=3 uid="uid://b3q5vakhrwj42"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_fiby8"]
 
@@ -7,6 +7,10 @@
 [sub_resource type="LabelSettings" id="LabelSettings_gc4vm"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_otnkf"]
+
+[sub_resource type="CapsuleMesh" id="CapsuleMesh_m7n0y"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_dsljk"]
 
 [node name="player" type="CharacterBody3D"]
 script = ExtResource("1_fiby8")
@@ -56,11 +60,28 @@ grow_horizontal = 2
 text = "%"
 label_settings = SubResource("LabelSettings_otnkf")
 
-[node name="stuff" type="Label" parent="Control"]
+[node name="wJump" type="Label" parent="Control"]
 layout_mode = 1
+offset_right = 242.0
+offset_bottom = 45.0
+text = "
+"
+label_settings = SubResource("LabelSettings_gc4vm")
+horizontal_alignment = 1
+
+[node name="fps" type="Label" parent="Control"]
+layout_mode = 1
+offset_top = 52.0
 offset_right = 242.0
 offset_bottom = 96.0
 text = "
 "
 label_settings = SubResource("LabelSettings_gc4vm")
 horizontal_alignment = 1
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("CapsuleMesh_m7n0y")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 0.100631, 0, 0, 0, 0.383342, 0, 1, -0.25)
+mesh = SubResource("BoxMesh_dsljk")
